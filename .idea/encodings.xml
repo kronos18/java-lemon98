@@ -11,16 +11,16 @@
     <file url="file://$PROJECT_DIR$/Data/Instances/instance7.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/Data/Instances/instance8.txt" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/Data/Instances/instance9.txt" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/Data/lps/exemple.lp" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Data/lps/transport.lp" charset="ISO-8859-2" />
+    <file url="file://$PROJECT_DIR$/Data/lps/exemple.lp" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/Data/lps/transport.lp" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/psp/Instance.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/Mip.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/Parser.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/Reservoir.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/TurbinePompe.java" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/test/Transport/Oleoduc.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/test/Transport/Oleoduc.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/test/cplex/ExempleCplex.java" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/test/psp/TestMip.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/test/psp/TestMip.java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
