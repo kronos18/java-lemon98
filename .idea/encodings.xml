@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance0.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance1.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance2.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance3.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance4.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance5.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance6.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance7.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance8.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/Instances/instance9.txt" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/Data/lps/exemple.lp" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Data/lps/transport.lp" charset="ISO-8859-2" />
+    <file url="file://$PROJECT_DIR$/src/psp/Instance.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/psp/Mip.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/psp/Parser.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/psp/Reservoir.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/psp/TurbinePompe.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/test/Transport/Oleoduc.java" charset="UTF-16" />
+    <file url="file://$PROJECT_DIR$/src/test/cplex/ExempleCplex.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/test/psp/TestMip.java" charset="ISO-8859-1" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
