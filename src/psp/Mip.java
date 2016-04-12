@@ -241,7 +241,7 @@ public class Mip {
 	 */
 	private void initObjective() throws IloException {
 		/*
-		 * Max (∑ CEt(Ptt + Ppt))
+		 * Max (SOMME( CEt(Ptt + Ppt)))
 		 */
 		
 		IloNumExpr obj = model.numVar(0, 0);
@@ -254,11 +254,11 @@ public class Mip {
 			//CEt(Ptt + Ppt)
 			expr2 = model.prod(instance.getCout()[i], expr1);
 			
-			//∑ CEt(Ptt + Ppt)
+			//SOMME( CEt(Ptt + Ppt))
 			obj = model.sum(obj, expr2);
 		}
 		
-		// Max (∑ CEt(Ptt + Ppt))
+		// Max (SOMME( CEt(Ptt + Ppt)))
 		model.addMaximize(obj, "Objective");
 	}
 
