@@ -13,8 +13,8 @@ import static org.junit.Assert.fail;
 public class ExempleCplex {
 
     /**
-     * Exemple d'utilisation de Cplex, nous allons r�soudre le programme
-     * lin�aire suivant:
+     * Exemple d'utilisation de Cplex, nous allons r?soudre le programme
+     * lin?aire suivant:
      * max z = 2x1 + x2
      * st 5x1 + 8x2 <= 80
      * 8x1 + 4x2 <= 80

@@ -1,7 +1,7 @@
 package psp;
 
 /**
- * Classe repr�setant une instance
+ * Classe repr?setant une instance
  */
 public class Instance {
     private TurbinePompe[] tPs;

@@ -24,7 +24,7 @@ public class Mip {
     private IloNumVar[] arrayHt;
 
     /**
-     * Constructeur d'un MIP pour résoudre l'instance
+     * Constructeur d'un MIP pour r�soudre l'instance
      */
     public Mip(Instance instance) throws IloException {
         this.instance = instance;
@@ -32,7 +32,7 @@ public class Mip {
     }
 
     /**
-     * Fonction résolvant l'instance.
+     * Fonction r�solvant l'instance.
      */
     public void solve() throws IloException {
         System.out.println("\nStart solving...");
@@ -57,7 +57,7 @@ public class Mip {
 
     /**
      * Fonction retournant la valeur de l'objectif. Requiert qu'une solution ait
-     * été trouvée
+     * �t� trouv�e
      */
     public double getObjValue() throws IloException {
         return model.getObjValue();
@@ -86,14 +86,14 @@ public class Mip {
     private void initVariables() throws IloException {
         // variables
         /*
-         * CEt : cout de l’électricité à la période t. t = 1..168 Ppmax, Ppmin :
+         * CEt : cout de l?�lectricit� � la p�riode t. t = 1..168 Ppmax, Ppmin :
 		 * puissances minimales et maximales de la PSP en mode pompe Ptmin,
 		 * Ptmax : puissances minimales et maximales de la PSP en mode turbine
 		 * Mpt : variable binaire qui indique si le mode pompe de la PSP est
 		 * actif (=1) ou inactif (=0) Mtt : variable binaire qui indique si le
 		 * mode turbine de la PSP est actif (=1) ou inactif (=0) Ptt : puissance
-		 * produite à la période t par le mode turbine Ppt : puissance consommée
-		 * à la période t par le mode pompe
+		 * produite � la p�riode t par le mode turbine Ppt : puissance consomm�e
+		 * � la p�riode t par le mode pompe
 		 */
         double[] cout = instance.getCout();
 
@@ -111,8 +111,8 @@ public class Mip {
                                           1);
 
         // Question 3
-		/*
-		 * Ht : variable indiquant la hauteur de chute à la periode t.
+        /*
+		 * Ht : variable indiquant la hauteur de chute � la periode t.
 		 */
         this.arrayHt = model.numVarArray(cout.length,
                                          -this.instance.getInf()
@@ -205,7 +205,7 @@ public class Mip {
     private void initContraintesReservoir() throws IloException {
         // Question 3
 		/*
-		 * Ht – Ht+1 = (2.3600) / (L . l) . ((Ptt / αt) + (Ppt / αp)) H0 = 0 – H
+		 * Ht ? Ht+1 = (2.3600) / (L . l) . ((Ptt / ?t) + (Ppt / ?p)) H0 = 0 ? H
 		 * + dH
 		 */
 
@@ -220,7 +220,7 @@ public class Mip {
         // this.arrayHt[i] = ;
         for (int i = 0; i < this.arrayHt.length; i++) {
             if (i == 0) {
-                // H0 = 0 – H + dH
+                // H0 = 0 ? H + dH
                 arrayHt[i] = h_0;
                 // expr1 = model.sum(-reservoirInf.getHauteur(),
                 // model.sum(reservoirInf.getHauteur(), model.abs(dH)));
@@ -228,7 +228,7 @@ public class Mip {
                 // model.addEq(this.arrayHt[i], expr2);
             }
             else {
-                // Ht – Ht+1 = (2.3600) / (L . l) . ((Ptt / αt) + (Ppt / αp))
+                // Ht ? Ht+1 = (2.3600) / (L . l) . ((Ptt / ?t) + (Ppt / ?p))
                 expr1 = model.prod(this.arrayPpt[i - 1],
                                    1 / tp.getAlpha_P());
                 expr2 = model.prod(this.arrayPtt[i - 1],
@@ -242,7 +242,7 @@ public class Mip {
                                    this.arrayHt[i]);
                 model.addEq(expr5,
                             expr4,
-                            "Ht-1 – Ht = (2.3600) / (L . l) . ((Ptt / αt) + (Ppt / αp))");
+                            "Ht-1 ? Ht = (2.3600) / (L . l) . ((Ptt / ?t) + (Ppt / ?p))");
             }
         }
     }
@@ -260,7 +260,7 @@ public class Mip {
      * Fonction initialisant les contraintes de refroidissement
      */
     private void initConstraintsRefroidissmenet() throws IloException {
-        // TODO à vous de jouer
+        // TODO � vous de jouer
         System.out.println("Contraintes de refroidissement non implementees");
         System.exit(1);
     }
@@ -269,7 +269,7 @@ public class Mip {
      * Fonction initialisant les contraintes liees a la regulation
      */
     private void initContraintesRegulation() throws IloException {
-        // TODO à vous de jouer
+        // TODO � vous de jouer
         System.out.println("Regulation non implementee");
         System.exit(1);
     }
@@ -279,11 +279,11 @@ public class Mip {
      */
     private void initObjective() throws IloException {
 		/*
-		 * Max (∑ Ptt.CEt + ∑ Ppt.CEt)
+		 * Max (? Ptt.CEt + ? Ppt.CEt)
 		 */
         double[] cout = instance.getCout();
 
-        // ∑ Ptt.CEt
+        // ? Ptt.CEt
         IloNumExpr[] arraytSumPtt = new IloNumExpr[cout.length];
         for (int i = 0; i < cout.length; i++) {
             arraytSumPtt[i] = model.prod(this.arrayPtt[i],
@@ -291,7 +291,7 @@ public class Mip {
         }
         IloNumExpr tSumPtt = model.sum(arraytSumPtt);
 
-        // ∑ Ppt.CEt
+        // ? Ppt.CEt
         IloNumExpr[] arraytSumPpt = new IloNumExpr[cout.length];
         for (int i = 0; i < cout.length; i++) {
             arraytSumPpt[i] = model.prod(this.arrayPpt[i],
@@ -299,11 +299,11 @@ public class Mip {
         }
         IloNumExpr tSumPpt = model.sum(arraytSumPpt);
 
-        // (∑ Ptt.CEt + ∑ Ppt.CEt)
+        // (? Ptt.CEt + ? Ppt.CEt)
         IloNumExpr obj = model.sum(tSumPtt,
                                    tSumPpt);
 
-        // Max (∑ Ptt.CEt + ∑ Ppt.CEt)
+        // Max (? Ptt.CEt + ? Ppt.CEt)
         model.addMaximize(obj,
                           "obj");
     }
