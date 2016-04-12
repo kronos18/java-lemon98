@@ -1,6 +1,3 @@
-\ENCODING=ISO-8859-1
-\Problem name: Exemple
-
 Maximize
  obj: 2 x_1 + x_2
 Subject To
