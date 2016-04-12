@@ -52,7 +52,7 @@ public class Oleoduc {
                                      "Yba");
 
         // fonction objectif
-		/*
+        /*
 		 * Min(4.X1a + X1b + 2.X2a + 3.X2b + 130000.Y1a + 90000.Y1b + 80000.Y2a + 140000.Y2b + 150000.Yba)
 		 */
         IloNumExpr[] tSum = {model.prod(4.0,

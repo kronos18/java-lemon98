@@ -1,17 +1,12 @@
 package psp;
 
-import static org.junit.Assert.fail;
-
-import ilog.concert.IloCopyManager;
-import ilog.concert.IloCopyable;
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
-import ilog.concert.IloNumVarBound;
-import ilog.concert.IloNumVarType;
-import ilog.concert.IloCopyManager.Check;
 import ilog.cplex.IloCplex;
+
+import static org.junit.Assert.fail;
 
 public class Mip {
     private Instance instance;
@@ -91,7 +86,7 @@ public class Mip {
     private void initVariables() throws IloException {
         // variables
         /*
-		 * CEt : cout de l’électricité à la période t. t = 1..168 Ppmax, Ppmin :
+         * CEt : cout de l’électricité à la période t. t = 1..168 Ppmax, Ppmin :
 		 * puissances minimales et maximales de la PSP en mode pompe Ptmin,
 		 * Ptmax : puissances minimales et maximales de la PSP en mode turbine
 		 * Mpt : variable binaire qui indique si le mode pompe de la PSP est
