@@ -2,6 +2,8 @@
 
 import static org.junit.Assert.fail;
 
+import com.sun.scenario.effect.Blend.Mode;
+
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloNumExpr;
@@ -15,7 +17,7 @@ public class Mip {
 	private IloCplex model;
 
 	private boolean reservoir = true;
-	private boolean coutChangement = false;
+	private boolean coutChangement = true;
 	private boolean refroidissement = false;
 	private boolean regulation = false;
 
@@ -24,6 +26,10 @@ public class Mip {
 	private IloIntVar[] arrayMpt;
 	private IloIntVar[] arrayMtt;
 	private IloNumVar[] arrayHt;
+	private IloIntVar[] arrayBatt;
+	private IloIntVar[] arrayBtat;
+	private IloIntVar[] arrayBapt;
+	private IloIntVar[] arrayBpat;
 
 	/**
 	 * Constructeur d'un MIP pour résoudre l'instance
@@ -54,7 +60,12 @@ public class Mip {
 			System.out.println("\tcout.length = " + instance.getCout().length);
 			for (int i = 0; i < instance.getCout().length; i++) {
 				if (reservoir)
-					res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i]), model.getValue(this.arrayHt[i])));
+				{
+					if (coutChangement)
+						res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i]), model.getValue(this.arrayHt[i]), model.getValue(this.arrayBatt[i]), model.getValue(this.arrayBtat[i]), model.getValue(this.arrayBapt[i]), model.getValue(this.arrayBpat[i])));
+					else
+						res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i]), model.getValue(this.arrayHt[i])));
+				}
 				else
 					res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i])));
 				
@@ -126,9 +137,16 @@ public class Mip {
 		 * Ht : variable indiquant la hauteur de chute à la periode t.
 		 */
 		this.arrayHt = model.numVarArray(cout.length, -this.instance.getInf().getHauteur() + instance.getDelta_H(), this.instance.getSup().getHauteur() + instance.getDelta_H());
+		
 		// Question 4
-		
-		
+		/*
+		 * Cat, Cta, Cap, Cpa : cout pour le passage du mode arret (a) a turbine (t)
+		 * Batt, Btat, Bapt, Bpat : est-ce qu'a l'instant t, il y a un changement de mode arret (a) vers le mode turbine (t).
+		 * */
+		this.arrayBatt = model.intVarArray(cout.length, 0, 1);
+		this.arrayBtat = model.intVarArray(cout.length, 0, 1);
+		this.arrayBapt = model.intVarArray(cout.length, 0, 1);
+		this.arrayBpat = model.intVarArray(cout.length, 0, 1);
 	}
 
 	/**
@@ -214,8 +232,30 @@ public class Mip {
 	 */
 	private void initCoutChangementFonction() throws IloException {
 		// Question 4
-		System.out.println("Couts de changement de fonctionnement non implementees");
-		System.exit(1);
+		/*
+		 * Bpa(t+1) >= Mpt - Mpt+1
+		 * Bta(t+1) >= Mtt - Mtt+1
+		 * Bat(t+1) >= Mtt+1 - Mtt
+		 * Bap(t+1) >= Mpt+1 - Mpt
+		 * */
+		IloNumExpr expr1, expr2, expr3, expr4;
+		for (int i = 0; i < this.arrayBatt.length-1; i++) {
+			//Bpa(t+1) >= Mpt - Mpt+1
+			expr1 = model.diff(this.arrayMpt[i], this.arrayMpt[i+1]);
+			model.addGe(this.arrayBpat[i+1], expr1, "Bpa(t+1) >= Mpt - Mpt+1");
+
+			//Bta(t+1) >= Mtt - Mtt+1
+			expr2 = model.diff(this.arrayMtt[i], this.arrayMtt[i+1]);
+			model.addGe(this.arrayBtat[i+1], expr2, "Bta(t+1) >= Mtt - Mtt+1");
+
+			//Bat(t+1) >= Mtt+1 - Mtt
+			expr3 = model.diff(this.arrayMtt[i+1], this.arrayMtt[i]);
+			model.addGe(this.arrayBatt[i+1], expr3, "Bat(t+1) >= Mtt+1 - Mtt");
+
+			//Bap(t+1) >= Mpt+1 - Mpt
+			expr4 = model.diff(this.arrayMpt[i+1], this.arrayMpt[i]);
+			model.addGe(this.arrayBapt[i+1], expr4, "Bap(t+1) >= Mpt+1 - Mpt");
+		}
 	}
 
 	/**
@@ -241,11 +281,13 @@ public class Mip {
 	 */
 	private void initObjective() throws IloException {
 		/*
-		 * Max (SOMME( CEt(Ptt + Ppt)))
+		 * On additionne les cout due aux changements, car ces couts sont negatifs dans le fichiers instance10.txt...
+		 * Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
 		 */
 		
 		IloNumExpr obj = model.numVar(0, 0);
-		IloNumExpr expr1, expr2;
+		IloNumExpr expr1, expr2, expr3, expr4, expr5, expr6, expr7, expr8, expr9, expr10;
+		TurbinePompe tp = instance.getTP();
 
 		for(int i = 0; i < instance.getCout().length; i++){
 			//Ptt + Ppt
@@ -254,11 +296,35 @@ public class Mip {
 			//CEt(Ptt + Ppt)
 			expr2 = model.prod(instance.getCout()[i], expr1);
 			
-			//SOMME( CEt(Ptt + Ppt))
-			obj = model.sum(obj, expr2);
+			//Cat * Bat
+			expr3 = model.prod(tp.getC_AT(), this.arrayBatt[i]);
+
+			//Cta * Bta
+			expr4 = model.prod(tp.getC_TA(), this.arrayBtat[i]);
+
+			//Cap * Bap
+			expr5 = model.prod(tp.getC_AP(), this.arrayBapt[i]);
+
+			//Cpa * Bpa
+			expr6 = model.prod(tp.getC_PA(), this.arrayBpat[i]);
+			
+			//Cat * Bat + Cta * Bta
+			expr7 = model.sum(expr3, expr4);
+			
+			//Cat * Bat + Cta * Bta + Cap * Bap
+			expr8 = model.sum(expr7, expr5);
+			
+			//Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
+			expr9 = model.sum(expr8, expr6);
+			
+			//CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
+			expr10 = model.sum(expr2, expr9);
+			
+			//SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa)
+			obj = model.sum(obj, expr10);
 		}
 		
-		// Max (SOMME( CEt(Ptt + Ppt)))
+		// Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
 		model.addMaximize(obj, "Objective");
 	}
 
