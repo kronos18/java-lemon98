@@ -18,7 +18,7 @@ public class Mip {
 
 	private boolean reservoir = true;
 	private boolean coutChangement = true;
-	private boolean refroidissement = false;
+	private boolean refroidissement = true;
 	private boolean regulation = false;
 
 	private IloNumVar[] arrayPtt;
@@ -30,6 +30,7 @@ public class Mip {
 	private IloIntVar[] arrayBtat;
 	private IloIntVar[] arrayBapt;
 	private IloIntVar[] arrayBpat;
+	private IloIntVar[] arrayIncrRefroidissement;
 
 	/**
 	 * Constructeur d'un MIP pour résoudre l'instance
@@ -147,6 +148,12 @@ public class Mip {
 		this.arrayBtat = model.intVarArray(cout.length, 0, 1);
 		this.arrayBapt = model.intVarArray(cout.length, 0, 1);
 		this.arrayBpat = model.intVarArray(cout.length, 0, 1);
+		
+		//Question 5
+		/*
+		 * Incr {0, .., 11}. Increment indiquant le nombre d'heure de fonctionnement de la turbine-pompe depuis son dernier arret
+		 */
+		this.arrayIncrRefroidissement = model.intVarArray(cout.length, 0, 11);
 	}
 
 	/**
@@ -169,8 +176,11 @@ public class Mip {
 	 */
 	private void initConstraintesPuissance() throws IloException {
 		/*
-		 * Mpt.Ppmax <= Ppt <= Ppmin.Mpt Mtt.Ptmin <= Ptt <= Ptmax.Mtt Mtt + Mpt
-		 * <= 1 Mpt = {0, 1} Mtt = {0, 1}
+		 * Mpt.Ppmax <= Ppt <= Ppmin.Mpt 
+		 * Mtt.Ptmin <= Ptt <= Ptmax.Mtt 
+		 * Mtt + Mpt <= 1 
+		 * Mpt = {0, 1} 
+		 * Mtt = {0, 1}
 		 */
 		TurbinePompe tp = instance.getTP();
 		IloNumExpr expr;
@@ -262,9 +272,25 @@ public class Mip {
 	 * Fonction initialisant les contraintes de refroidissement
 	 */
 	private void initConstraintsRefroidissmenet() throws IloException {
-		// TODO à vous de jouer
-		System.out.println("Contraintes de refroidissement non implementees");
-		System.exit(1);
+		//Question 5
+		/*
+		 * Incr(t) = incr(t-1) * (Mtt + Mpt) + Mtt + Mpt
+		 */
+		IloNumExpr expr1, expr2, expr3;
+		expr1 = model.intVar(0, 0);
+		//this.arrayIncrRefroidissement[0] = model.intVar(0, 0);
+		for (int i = 3; i < this.arrayIncrRefroidissement.length; i++) {
+				for (int j = i; j < i - 3; j--) {
+					expr1 = model.sum(expr1, model.sum(this.arrayMtt[j], this.arrayMpt[j]));
+				}
+				model.addLe(expr1, 3);
+				expr1 = model.intVar(0, 0);
+			/*expr1 = model.sum(this.arrayMtt[i], this.arrayMpt[i]);
+			expr2 = model.prod(this.arrayIncrRefroidissement[i-1], expr1);
+			expr3 = model.sum(expr2, expr1);
+			model.addEq(this.arrayIncrRefroidissement[i], expr3);*/
+			
+		}
 	}
 
 	/**
