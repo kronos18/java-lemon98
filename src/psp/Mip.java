@@ -1,8 +1,4 @@
-﻿package psp;
-
-import static org.junit.Assert.fail;
-
-import com.sun.scenario.effect.Blend.Mode;
+package psp;
 
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
@@ -12,111 +8,140 @@ import ilog.cplex.IloCplex;
 import psp.resultManagement.SolverResult;
 import psp.resultManagement.TimeResult;
 
+import static org.junit.Assert.fail;
+
 public class Mip {
-	private Instance instance;
-	private IloCplex model;
+    private Instance instance;
+    private IloCplex model;
 
-	private boolean reservoir = true;
-	private boolean coutChangement = true;
-	private boolean refroidissement = true;
-	private boolean regulation = false;
+    private boolean reservoir       = true;
+    private boolean coutChangement  = true;
+    private boolean refroidissement = true;
+    private boolean regulation      = false;
 
-	private IloNumVar[] arrayPtt;
-	private IloNumVar[] arrayPpt;
-	private IloIntVar[] arrayMpt;
-	private IloIntVar[] arrayMtt;
-	private IloNumVar[] arrayHt;
-	private IloIntVar[] arrayBatt;
-	private IloIntVar[] arrayBtat;
-	private IloIntVar[] arrayBapt;
-	private IloIntVar[] arrayBpat;
-	private IloIntVar[] arrayIncrRefroidissement;
+    private IloNumVar[] arrayPtt;
+    private IloNumVar[] arrayPpt;
+    private IloIntVar[] arrayMpt;
+    private IloIntVar[] arrayMtt;
+    private IloNumVar[] arrayHt;
+    private IloIntVar[] arrayBatt;
+    private IloIntVar[] arrayBtat;
+    private IloIntVar[] arrayBapt;
+    private IloIntVar[] arrayBpat;
+    private IloIntVar[] arrayIncrRefroidissement;
 
-	/**
-	 * Constructeur d'un MIP pour résoudre l'instance
-	 */
-	public Mip(Instance instance) throws IloException {
-		this.instance = instance;
-		initModel();
-	}
+    /**
+     * Constructeur d'un MIP pour résoudre l'instance
+     */
+    public Mip(Instance instance) throws IloException {
+        this.instance = instance;
+        initModel();
+    }
 
-	/**
-	 * Fonction résolvant l'instance.
-	 */
-	public SolverResult solve() throws IloException {
-		SolverResult res = null;
-		System.out.println("\nConfiguration : PPmax = " + instance.getTP().getP_P_max() + ", PPmin = " + instance.getTP().getP_P_min());
-		System.out.println("\nConfiguration : PTmax = " + instance.getTP().getP_T_max() + ", PTmin = " + instance.getTP().getP_T_min());
-		
-		System.out.println("\nStart solving...");
-		if (model.solve()) {
-			res = new SolverResult(false);
-			System.out.println("\nSolution status = " + model.getStatus());
-			res.setSolutionStatus(model.getStatus().toString());
-			
-			System.out.println("Objective value : " + this.getObjValue());
-			res.setObjValue(this.getObjValue());
-			
-			System.out.println("Solution : ");
-			System.out.println("\tcout.length = " + instance.getCout().length);
-			for (int i = 0; i < instance.getCout().length; i++) {
-				if (reservoir)
-				{
-					if (coutChangement)
-						res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i]), model.getValue(this.arrayHt[i]), model.getValue(this.arrayBatt[i]), model.getValue(this.arrayBtat[i]), model.getValue(this.arrayBapt[i]), model.getValue(this.arrayBpat[i])));
-					else
-						res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i]), model.getValue(this.arrayHt[i])));
-				}
-				else
-					res.addTimeResult(new TimeResult(i, model.getValue(this.arrayPtt[i]), model.getValue(this.arrayMtt[i]), model.getValue(this.arrayPpt[i]), model.getValue(this.arrayMpt[i])));
-				
-				System.out.println("\t\tPt" + i + " = " + model.getValue(this.arrayPtt[i]));
-				System.out.println("\t\tMt" + i + " = " + model.getValue(this.arrayMtt[i]));
-				System.out.println("\t\tPp" + i + " = " + model.getValue(this.arrayPpt[i]));
-				System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayMpt[i]));
-				if (reservoir)
-					System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayHt[i]));
-				System.out.println("----------------------------------------");
-			}
-		} else {
-			res = new SolverResult(true);
-			fail("No feaisible solution has been found");
-		}
-		
-		return res;
-	}
+    /**
+     * Fonction résolvant l'instance.
+     */
+    public SolverResult solve() throws IloException {
+        SolverResult res = null;
+        System.out.println("\nConfiguration : PPmax = " + instance.getTP()
+                                                                  .getP_P_max() + ", PPmin = " + instance.getTP()
+                                                                                                         .getP_P_min());
+        System.out.println("\nConfiguration : PTmax = " + instance.getTP()
+                                                                  .getP_T_max() + ", PTmin = " + instance.getTP()
+                                                                                                         .getP_T_min());
 
-	/**
-	 * Fonction retournant la valeur de l'objectif. Requiert qu'une solution ait
-	 * été trouvée
-	 */
-	public double getObjValue() throws IloException {
-		return model.getObjValue();
-	}
+        System.out.println("\nStart solving...");
+        if (model.solve()) {
+            res = new SolverResult(false);
+            System.out.println("\nSolution status = " + model.getStatus());
+            res.setSolutionStatus(model.getStatus()
+                                       .toString());
 
-	/**
-	 * Fonction liberant la memoire utilisee par le model
-	 */
-	public void clear() {
-		model.end();
-	}
+            System.out.println("Objective value : " + this.getObjValue());
+            res.setObjValue(this.getObjValue());
 
-	/**
-	 * Fonction initialisant le model Cplex
-	 */
-	private void initModel() throws IloException {
-		model = new IloCplex();
-		initVariables();
-		initConstraints();
-		initObjective();
-	}
+            System.out.println("Solution : ");
+            System.out.println("\tcout.length = " + instance.getCout().length);
+            for (int i = 0; i < instance.getCout().length; i++) {
+                if (reservoir) {
+                    if (coutChangement) {
+                        res.addTimeResult(new TimeResult(i,
+                                                         model.getValue(this.arrayPtt[i]),
+                                                         model.getValue(this.arrayMtt[i]),
+                                                         model.getValue(this.arrayPpt[i]),
+                                                         model.getValue(this.arrayMpt[i]),
+                                                         model.getValue(this.arrayHt[i]),
+                                                         model.getValue(this.arrayBatt[i]),
+                                                         model.getValue(this.arrayBtat[i]),
+                                                         model.getValue(this.arrayBapt[i]),
+                                                         model.getValue(this.arrayBpat[i])));
+                    }
+                    else {
+                        res.addTimeResult(new TimeResult(i,
+                                                         model.getValue(this.arrayPtt[i]),
+                                                         model.getValue(this.arrayMtt[i]),
+                                                         model.getValue(this.arrayPpt[i]),
+                                                         model.getValue(this.arrayMpt[i]),
+                                                         model.getValue(this.arrayHt[i])));
+                    }
+                }
+                else {
+                    res.addTimeResult(new TimeResult(i,
+                                                     model.getValue(this.arrayPtt[i]),
+                                                     model.getValue(this.arrayMtt[i]),
+                                                     model.getValue(this.arrayPpt[i]),
+                                                     model.getValue(this.arrayMpt[i])));
+                }
 
-	/**
-	 * Function initialisant les variables
-	 */
-	private void initVariables() throws IloException {
-		// variables
-		/*
+                System.out.println("\t\tPt" + i + " = " + model.getValue(this.arrayPtt[i]));
+                System.out.println("\t\tMt" + i + " = " + model.getValue(this.arrayMtt[i]));
+                System.out.println("\t\tPp" + i + " = " + model.getValue(this.arrayPpt[i]));
+                System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayMpt[i]));
+                if (reservoir) {
+                    System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayHt[i]));
+                }
+                System.out.println("----------------------------------------");
+            }
+        }
+        else {
+            res = new SolverResult(true);
+            fail("No feaisible solution has been found");
+        }
+
+        return res;
+    }
+
+    /**
+     * Fonction retournant la valeur de l'objectif. Requiert qu'une solution ait
+     * été trouvée
+     */
+    public double getObjValue() throws IloException {
+        return model.getObjValue();
+    }
+
+    /**
+     * Fonction liberant la memoire utilisee par le model
+     */
+    public void clear() {
+        model.end();
+    }
+
+    /**
+     * Fonction initialisant le model Cplex
+     */
+    private void initModel() throws IloException {
+        model = new IloCplex();
+        initVariables();
+        initConstraints();
+        initObjective();
+    }
+
+    /**
+     * Function initialisant les variables
+     */
+    private void initVariables() throws IloException {
+        // variables
+        /*
 		 * CEt : cout de l’électricité à la période t. t = 1..168 Ppmax, Ppmin :
 		 * puissances minimales et maximales de la PSP en mode pompe Ptmin,
 		 * Ptmax : puissances minimales et maximales de la PSP en mode turbine
@@ -126,55 +151,81 @@ public class Mip {
 		 * produite à la période t par le mode turbine Ppt : puissance consommée
 		 * à la période t par le mode pompe
 		 */
-		double[] cout = instance.getCout();
+        double[] cout = instance.getCout();
 
-		this.arrayPtt = model.numVarArray(cout.length, 0.0, Double.MAX_VALUE);
-		this.arrayPpt = model.numVarArray(cout.length, -Double.MAX_VALUE, 0.0);
-		this.arrayMpt = model.intVarArray(cout.length, 0, 1);
-		this.arrayMtt = model.intVarArray(cout.length, 0, 1);
+        this.arrayPtt = model.numVarArray(cout.length,
+                                          0.0,
+                                          Double.MAX_VALUE);
+        this.arrayPpt = model.numVarArray(cout.length,
+                                          -Double.MAX_VALUE,
+                                          0.0);
+        this.arrayMpt = model.intVarArray(cout.length,
+                                          0,
+                                          1);
+        this.arrayMtt = model.intVarArray(cout.length,
+                                          0,
+                                          1);
 
-		// Question 3
+        // Question 3
 		/*
 		 * Ht : variable indiquant la hauteur de chute à la periode t.
 		 */
-		this.arrayHt = model.numVarArray(cout.length, -this.instance.getInf().getHauteur() + instance.getDelta_H(), this.instance.getSup().getHauteur() + instance.getDelta_H());
-		
-		// Question 4
+        this.arrayHt = model.numVarArray(cout.length,
+                                         -this.instance.getInf()
+                                                       .getHauteur() + instance.getDelta_H(),
+                                         this.instance.getSup()
+                                                      .getHauteur() + instance.getDelta_H());
+
+        // Question 4
 		/*
 		 * Cat, Cta, Cap, Cpa : cout pour le passage du mode arret (a) a turbine (t)
 		 * Batt, Btat, Bapt, Bpat : est-ce qu'a l'instant t, il y a un changement de mode arret (a) vers le mode turbine (t).
 		 * */
-		this.arrayBatt = model.intVarArray(cout.length, 0, 1);
-		this.arrayBtat = model.intVarArray(cout.length, 0, 1);
-		this.arrayBapt = model.intVarArray(cout.length, 0, 1);
-		this.arrayBpat = model.intVarArray(cout.length, 0, 1);
-		
-		//Question 5
+        this.arrayBatt = model.intVarArray(cout.length,
+                                           0,
+                                           1);
+        this.arrayBtat = model.intVarArray(cout.length,
+                                           0,
+                                           1);
+        this.arrayBapt = model.intVarArray(cout.length,
+                                           0,
+                                           1);
+        this.arrayBpat = model.intVarArray(cout.length,
+                                           0,
+                                           1);
+
+        //Question 5
 		/*
 		 * Incr {0, .., 11}. Increment indiquant le nombre d'heure de fonctionnement de la turbine-pompe depuis son dernier arret
 		 */
-		this.arrayIncrRefroidissement = model.intVarArray(cout.length, 0, 11);
-	}
+        this.arrayIncrRefroidissement = model.intVarArray(cout.length,
+                                                          0,
+                                                          11);
+    }
 
-	/**
-	 * Function initialisant les contraintes
-	 */
-	private void initConstraints() throws IloException {
-		initConstraintesPuissance();
-		if (reservoir)
-			initContraintesReservoir();
-		if (coutChangement)
-			initCoutChangementFonction();
-		if (refroidissement)
-			initConstraintsRefroidissmenet();
-		if (regulation)
-			initContraintesRegulation();
-	}
+    /**
+     * Function initialisant les contraintes
+     */
+    private void initConstraints() throws IloException {
+        initConstraintesPuissance();
+        if (reservoir) {
+            initContraintesReservoir();
+        }
+        if (coutChangement) {
+            initCoutChangementFonction();
+        }
+        if (refroidissement) {
+            initConstraintsRefroidissmenet();
+        }
+        if (regulation) {
+            initContraintesRegulation();
+        }
+    }
 
-	/**
-	 * Fonction initialisant les contraintes de puissances des turbines pompes
-	 */
-	private void initConstraintesPuissance() throws IloException {
+    /**
+     * Fonction initialisant les contraintes de puissances des turbines pompes
+     */
+    private void initConstraintesPuissance() throws IloException {
 		/*
 		 * Mpt.Ppmax <= Ppt <= Ppmin.Mpt 
 		 * Mtt.Ptmin <= Ptt <= Ptmax.Mtt 
@@ -182,199 +233,251 @@ public class Mip {
 		 * Mpt = {0, 1} 
 		 * Mtt = {0, 1}
 		 */
-		TurbinePompe tp = instance.getTP();
-		IloNumExpr expr;
+        TurbinePompe tp = instance.getTP();
+        IloNumExpr   expr;
 
-		for (int i = 0; i < this.arrayPpt.length; i++) {
-			// Mpt.Ppmax <= Ppt
-			expr = model.prod(this.arrayMpt[i], tp.getP_P_max());
-			model.addGe(this.arrayPpt[i], expr, "Mpt.Ppmax <= Ppt");		
+        for (int i = 0; i < this.arrayPpt.length; i++) {
+            // Mpt.Ppmax <= Ppt
+            expr = model.prod(this.arrayMpt[i],
+                              tp.getP_P_max());
+            model.addGe(this.arrayPpt[i],
+                        expr,
+                        "Mpt.Ppmax <= Ppt");
 
-			// Ppt <= Ppmin.Mpt
-			expr = model.prod(this.arrayMpt[i], tp.getP_P_min());
-			model.addLe(this.arrayPpt[i], expr, "Ppt <= Ppmin.Mpt");		
+            // Ppt <= Ppmin.Mpt
+            expr = model.prod(this.arrayMpt[i],
+                              tp.getP_P_min());
+            model.addLe(this.arrayPpt[i],
+                        expr,
+                        "Ppt <= Ppmin.Mpt");
 
-			// Mtt.Ptmin <= Ptt
-			expr = model.prod(this.arrayMtt[i], tp.getP_T_min());
-			model.addGe(this.arrayPtt[i], expr, "Mtt.Ptmin <= Ptt");
-			
-			// Ptt <= Ptmax.Mtt
-			expr = model.prod(this.arrayMtt[i], tp.getP_T_max());
-			model.addLe(this.arrayPtt[i], expr, "Ptt <= Ptmax.Mtt");
-		
-			// Mtt + Mpt <= 1
-			expr = model.sum(this.arrayMtt[i], this.arrayMpt[i]);
-			model.addLe(expr, 1, "Mtt + Mpt <= 1");
-		}
-	}
+            // Mtt.Ptmin <= Ptt
+            expr = model.prod(this.arrayMtt[i],
+                              tp.getP_T_min());
+            model.addGe(this.arrayPtt[i],
+                        expr,
+                        "Mtt.Ptmin <= Ptt");
 
-	/**
-	 * Function initialisant les contraintes de reservoirs
-	 */
-	private void initContraintesReservoir() throws IloException {
-		// Question 3
+            // Ptt <= Ptmax.Mtt
+            expr = model.prod(this.arrayMtt[i],
+                              tp.getP_T_max());
+            model.addLe(this.arrayPtt[i],
+                        expr,
+                        "Ptt <= Ptmax.Mtt");
+
+            // Mtt + Mpt <= 1
+            expr = model.sum(this.arrayMtt[i],
+                             this.arrayMpt[i]);
+            model.addLe(expr,
+                        1,
+                        "Mtt + Mpt <= 1");
+        }
+    }
+
+    /**
+     * Function initialisant les contraintes de reservoirs
+     */
+    private void initContraintesReservoir() throws IloException {
+        // Question 3
 		/*
 		 * Ht – Ht+1 = (2.3600) / (L . l) . ((Ptt / αt) + (Ppt / αp))
 		 * H0 = 0 – H + dH
 		 */
 
-		TurbinePompe tp = instance.getTP();
-		Reservoir reservoirInf = instance.getInf();
-		Reservoir reservoirSup = instance.getSup();
-		IloNumExpr exprRight1, exprRight2, exprRight3, exprLeft;
-		Double facteur = ((2 * 3600) / (reservoirInf.getLargeur() * reservoirInf.getLongueur()));
+        TurbinePompe tp           = instance.getTP();
+        Reservoir    reservoirInf = instance.getInf();
+        Reservoir    reservoirSup = instance.getSup();
+        IloNumExpr   exprRight1, exprRight2, exprRight3, exprLeft;
+        Double       facteur      = ((2 * 3600) / (reservoirInf.getLargeur() * reservoirInf.getLongueur()));
 
-		// H0 = 0 - H + dH
-		model.addEq(this.arrayHt[0], reservoirSup.getH_0() - reservoirInf.getH_0() + instance.getDelta_H());
-		for (int i = 0; i < this.arrayHt.length-1; i++) {
-			// Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))			
-			// soit : Ht - Ht+1 = ((2.3600) / (L . l) . (Ptt / Î±t)) + ((2.3600) / (L . l) . (Ppt / Î±p))
-			exprRight1 = model.prod(this.arrayPpt[i], facteur / tp.getAlpha_P());
-			exprRight2 = model.prod(this.arrayPtt[i], facteur / tp.getAlpha_T());
-			exprRight3 = model.sum(exprRight1, exprRight2);
-			exprLeft = model.diff(this.arrayHt[i], this.arrayHt[i+1]);
-			model.addEq(exprLeft, exprRight3, "Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))");
-		}
-	}
+        // H0 = 0 - H + dH
+        model.addEq(this.arrayHt[0],
+                    reservoirSup.getH_0() - reservoirInf.getH_0() + instance.getDelta_H());
+        for (int i = 0; i < this.arrayHt.length - 1; i++) {
+            // Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))
+            // soit : Ht - Ht+1 = ((2.3600) / (L . l) . (Ptt / Î±t)) + ((2.3600) / (L . l) . (Ppt / Î±p))
+            exprRight1 = model.prod(this.arrayPpt[i],
+                                    facteur / tp.getAlpha_P());
+            exprRight2 = model.prod(this.arrayPtt[i],
+                                    facteur / tp.getAlpha_T());
+            exprRight3 = model.sum(exprRight1,
+                                   exprRight2);
+            exprLeft = model.diff(this.arrayHt[i],
+                                  this.arrayHt[i + 1]);
+            model.addEq(exprLeft,
+                        exprRight3,
+                        "Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))");
+        }
+    }
 
-	/**
-	 * Fonction initialisant les couts de changement de fonctionnement
-	 */
-	private void initCoutChangementFonction() throws IloException {
-		// Question 4
+    /**
+     * Fonction initialisant les couts de changement de fonctionnement
+     */
+    private void initCoutChangementFonction() throws IloException {
+        // Question 4
 		/*
 		 * Bpa(t+1) >= Mpt - Mpt+1
 		 * Bta(t+1) >= Mtt - Mtt+1
 		 * Bat(t+1) >= Mtt+1 - Mtt
 		 * Bap(t+1) >= Mpt+1 - Mpt
 		 * */
-		IloNumExpr expr1, expr2, expr3, expr4;
-		for (int i = 0; i < this.arrayBatt.length-1; i++) {
-			//Bpa(t+1) >= Mpt - Mpt+1
-			expr1 = model.diff(this.arrayMpt[i], this.arrayMpt[i+1]);
-			model.addGe(this.arrayBpat[i+1], expr1, "Bpa(t+1) >= Mpt - Mpt+1");
+        IloNumExpr expr1, expr2, expr3, expr4;
+        for (int i = 0; i < this.arrayBatt.length - 1; i++) {
+            //Bpa(t+1) >= Mpt - Mpt+1
+            expr1 = model.diff(this.arrayMpt[i],
+                               this.arrayMpt[i + 1]);
+            model.addGe(this.arrayBpat[i + 1],
+                        expr1,
+                        "Bpa(t+1) >= Mpt - Mpt+1");
 
-			//Bta(t+1) >= Mtt - Mtt+1
-			expr2 = model.diff(this.arrayMtt[i], this.arrayMtt[i+1]);
-			model.addGe(this.arrayBtat[i+1], expr2, "Bta(t+1) >= Mtt - Mtt+1");
+            //Bta(t+1) >= Mtt - Mtt+1
+            expr2 = model.diff(this.arrayMtt[i],
+                               this.arrayMtt[i + 1]);
+            model.addGe(this.arrayBtat[i + 1],
+                        expr2,
+                        "Bta(t+1) >= Mtt - Mtt+1");
 
-			//Bat(t+1) >= Mtt+1 - Mtt
-			expr3 = model.diff(this.arrayMtt[i+1], this.arrayMtt[i]);
-			model.addGe(this.arrayBatt[i+1], expr3, "Bat(t+1) >= Mtt+1 - Mtt");
+            //Bat(t+1) >= Mtt+1 - Mtt
+            expr3 = model.diff(this.arrayMtt[i + 1],
+                               this.arrayMtt[i]);
+            model.addGe(this.arrayBatt[i + 1],
+                        expr3,
+                        "Bat(t+1) >= Mtt+1 - Mtt");
 
-			//Bap(t+1) >= Mpt+1 - Mpt
-			expr4 = model.diff(this.arrayMpt[i+1], this.arrayMpt[i]);
-			model.addGe(this.arrayBapt[i+1], expr4, "Bap(t+1) >= Mpt+1 - Mpt");
-		}
-	}
+            //Bap(t+1) >= Mpt+1 - Mpt
+            expr4 = model.diff(this.arrayMpt[i + 1],
+                               this.arrayMpt[i]);
+            model.addGe(this.arrayBapt[i + 1],
+                        expr4,
+                        "Bap(t+1) >= Mpt+1 - Mpt");
+        }
+    }
 
-	/**
-	 * Fonction initialisant les contraintes de refroidissement
-	 */
-	private void initConstraintsRefroidissmenet() throws IloException {
-		//Question 5
+    /**
+     * Fonction initialisant les contraintes de refroidissement
+     */
+    private void initConstraintsRefroidissmenet() throws IloException {
+        //Question 5
 		/*
 		 * Incr(t) = incr(t-1) * (Mtt + Mpt) + Mtt + Mpt
 		 */
-		IloNumExpr expr1, expr2, expr3;
-		expr1 = model.intVar(0, 0);
-		//this.arrayIncrRefroidissement[0] = model.intVar(0, 0);
-		for (int i = 3; i < this.arrayIncrRefroidissement.length; i++) {
-				for (int j = i; j < i - 3; j--) {
-					expr1 = model.sum(expr1, model.sum(this.arrayMtt[j], this.arrayMpt[j]));
-				}
-				model.addLe(expr1, 3);
-				expr1 = model.intVar(0, 0);
+        IloNumExpr expr1, expr2, expr3;
+        expr1 = model.intVar(0,
+                             0);
+        //this.arrayIncrRefroidissement[0] = model.intVar(0, 0);
+        for (int i = 3; i < this.arrayIncrRefroidissement.length; i++) {
+            for (int j = i; j < i - 3; j--) {
+                expr1 = model.sum(expr1,
+                                  model.sum(this.arrayMtt[j],
+                                            this.arrayMpt[j]));
+            }
+            model.addLe(expr1,
+                        3);
+            expr1 = model.intVar(0,
+                                 0);
 			/*expr1 = model.sum(this.arrayMtt[i], this.arrayMpt[i]);
 			expr2 = model.prod(this.arrayIncrRefroidissement[i-1], expr1);
 			expr3 = model.sum(expr2, expr1);
 			model.addEq(this.arrayIncrRefroidissement[i], expr3);*/
-			
-		}
-	}
 
-	/**
-	 * Fonction initialisant les contraintes liees a la regulation
-	 */
-	private void initContraintesRegulation() throws IloException {
-		// TODO à vous de jouer
-		System.out.println("Regulation non implementee");
-		System.exit(1);
-	}
+        }
+    }
 
-	/**
-	 * Fonction initialisant la fonction objectif
-	 */
-	private void initObjective() throws IloException {
+    /**
+     * Fonction initialisant les contraintes liees a la regulation
+     */
+    private void initContraintesRegulation() throws IloException {
+        // TODO à vous de jouer
+        System.out.println("Regulation non implementee");
+        System.exit(1);
+    }
+
+    /**
+     * Fonction initialisant la fonction objectif
+     */
+    private void initObjective() throws IloException {
 		/*
 		 * On additionne les cout due aux changements, car ces couts sont negatifs dans le fichiers instance10.txt...
 		 * Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
 		 */
-		
-		IloNumExpr obj = model.numVar(0, 0);
-		IloNumExpr expr1, expr2, expr3, expr4, expr5, expr6, expr7, expr8, expr9, expr10;
-		TurbinePompe tp = instance.getTP();
 
-		for(int i = 0; i < instance.getCout().length; i++){
-			//Ptt + Ppt
-			expr1 = model.sum(this.arrayPtt[i], this.arrayPpt[i]);
-			
-			//CEt(Ptt + Ppt)
-			expr2 = model.prod(instance.getCout()[i], expr1);
-			
-			//Cat * Bat
-			expr3 = model.prod(tp.getC_AT(), this.arrayBatt[i]);
+        IloNumExpr obj = model.numVar(0,
+                                      0);
+        IloNumExpr   expr1, expr2, expr3, expr4, expr5, expr6, expr7, expr8, expr9, expr10;
+        TurbinePompe tp = instance.getTP();
 
-			//Cta * Bta
-			expr4 = model.prod(tp.getC_TA(), this.arrayBtat[i]);
+        for (int i = 0; i < instance.getCout().length; i++) {
+            //Ptt + Ppt
+            expr1 = model.sum(this.arrayPtt[i],
+                              this.arrayPpt[i]);
 
-			//Cap * Bap
-			expr5 = model.prod(tp.getC_AP(), this.arrayBapt[i]);
+            //CEt(Ptt + Ppt)
+            expr2 = model.prod(instance.getCout()[i],
+                               expr1);
 
-			//Cpa * Bpa
-			expr6 = model.prod(tp.getC_PA(), this.arrayBpat[i]);
-			
-			//Cat * Bat + Cta * Bta
-			expr7 = model.sum(expr3, expr4);
-			
-			//Cat * Bat + Cta * Bta + Cap * Bap
-			expr8 = model.sum(expr7, expr5);
-			
-			//Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
-			expr9 = model.sum(expr8, expr6);
-			
-			//CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
-			expr10 = model.sum(expr2, expr9);
-			
-			//SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa)
-			obj = model.sum(obj, expr10);
-		}
-		
-		// Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
-		model.addMaximize(obj, "Objective");
-	}
+            //Cat * Bat
+            expr3 = model.prod(tp.getC_AT(),
+                               this.arrayBatt[i]);
 
-	public boolean isCoutChangement() {
-		return coutChangement;
-	}
+            //Cta * Bta
+            expr4 = model.prod(tp.getC_TA(),
+                               this.arrayBtat[i]);
 
-	public void setCoutChangement(boolean coutChangement) {
-		this.coutChangement = coutChangement;
-	}
+            //Cap * Bap
+            expr5 = model.prod(tp.getC_AP(),
+                               this.arrayBapt[i]);
 
-	public boolean isRefroidissement() {
-		return refroidissement;
-	}
+            //Cpa * Bpa
+            expr6 = model.prod(tp.getC_PA(),
+                               this.arrayBpat[i]);
 
-	public void setRefroidissement(boolean refroidissement) {
-		this.refroidissement = refroidissement;
-	}
+            //Cat * Bat + Cta * Bta
+            expr7 = model.sum(expr3,
+                              expr4);
 
-	public boolean isRegulation() {
-		return regulation;
-	}
+            //Cat * Bat + Cta * Bta + Cap * Bap
+            expr8 = model.sum(expr7,
+                              expr5);
 
-	public void setRegulation(boolean regulation) {
-		this.regulation = regulation;
-	}
+            //Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
+            expr9 = model.sum(expr8,
+                              expr6);
+
+            //CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa
+            expr10 = model.sum(expr2,
+                               expr9);
+
+            //SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa)
+            obj = model.sum(obj,
+                            expr10);
+        }
+
+        // Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
+        model.addMaximize(obj,
+                          "Objective");
+    }
+
+    public boolean isCoutChangement() {
+        return coutChangement;
+    }
+
+    public void setCoutChangement(boolean coutChangement) {
+        this.coutChangement = coutChangement;
+    }
+
+    public boolean isRefroidissement() {
+        return refroidissement;
+    }
+
+    public void setRefroidissement(boolean refroidissement) {
+        this.refroidissement = refroidissement;
+    }
+
+    public boolean isRegulation() {
+        return regulation;
+    }
+
+    public void setRegulation(boolean regulation) {
+        this.regulation = regulation;
+    }
 }

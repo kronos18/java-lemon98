@@ -14,7 +14,7 @@
     <file url="file://$PROJECT_DIR$/Data/lps/exemple.lp" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/Data/lps/transport.lp" charset="UTF-16" />
     <file url="file://$PROJECT_DIR$/src/psp/Instance.java" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/psp/Mip.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/src/psp/Mip.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/psp/Parser.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/Reservoir.java" charset="ISO-8859-1" />
     <file url="file://$PROJECT_DIR$/src/psp/TurbinePompe.java" charset="ISO-8859-1" />
