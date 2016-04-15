@@ -35,8 +35,8 @@ public class IHM {
 		//Panel du haut
 		m_panelTop = new JPanel(new BorderLayout());
 		m_panelTop.setBorder(new EmptyBorder(10, 10, 10, 10));
-		m_mainFrame.getContentPane().add(m_panelTop, BorderLayout.PAGE_START);
-
+		m_mainFrame.setContentPane(m_panelTop);
+		
 		//Label Bonjour, padding bottom = 10
 		m_labelBonjour = new JLabel("Bonjour !");
 		m_labelBonjour.setBorder(new EmptyBorder(0, 0, 10, 0));
@@ -45,7 +45,6 @@ public class IHM {
 		//zone de texte pour afficher les resultats
 		m_textareaResults = new JTextArea(20, 10);
 		m_textareaResults.setEditable(false);
-		m_textareaResults.setText("Salut \n\nje suis la\n\na++");
 
 		//Scroll pane for the textPane
 		m_scrollPane = new JScrollPane(m_textareaResults);
