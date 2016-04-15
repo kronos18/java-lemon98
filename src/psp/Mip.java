@@ -292,21 +292,22 @@ public class Mip {
 
         // H0 = 0 - H + dH
         model.addEq(this.arrayHt[0],
-                    reservoirSup.getH_0() - reservoirInf.getH_0() + instance.getDelta_H());
-        for (int i = 0; i < this.arrayHt.length - 1; i++) {
-            // Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))
-            // soit : Ht - Ht+1 = ((2.3600) / (L . l) . (Ptt / Î±t)) + ((2.3600) / (L . l) . (Ppt / Î±p))
-            exprRight1 = model.prod(this.arrayPpt[i],
+                    reservoirSup.getH_0() - reservoirInf.getH_0() + instance.getDelta_H());        
+        
+        for (int i = 1; i < this.arrayHt.length; i++) {
+            // Ht-1 - Ht = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))
+            // soit : Ht-1 - Ht = ((2.3600) / (L . l) . (Ptt / Î±t)) + ((2.3600) / (L . l) . (Ppt / Î±p))
+            exprRight1 = model.prod(this.arrayPpt[i-1],
                                     facteur / tp.getAlpha_P());
-            exprRight2 = model.prod(this.arrayPtt[i],
+            exprRight2 = model.prod(this.arrayPtt[i-1],
                                     facteur / tp.getAlpha_T());
             exprRight3 = model.sum(exprRight1,
                                    exprRight2);
-            exprLeft = model.diff(this.arrayHt[i],
-                                  this.arrayHt[i + 1]);
+            exprLeft = model.diff(this.arrayHt[i-1],
+                                  this.arrayHt[i]);
             model.addEq(exprLeft,
                         exprRight3,
-                        "Ht - Ht+1 = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))");
+                        "Ht-1 - Ht = (2.3600) / (L . l) . ((Ptt / Î±t) + (Ppt / Î±p))");
         }
     }
 

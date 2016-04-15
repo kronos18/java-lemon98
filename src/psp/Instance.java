@@ -47,4 +47,9 @@ public class Instance {
 	public double[] getRegulation() {
 		return regulation;
 	}
+
+	public void setDelta_H(double deltaH) {
+		this.delta_H = deltaH;
+	}
+	
 }

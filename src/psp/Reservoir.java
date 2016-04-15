@@ -30,4 +30,19 @@ public class Reservoir {
 	public double getH_0() {
 		return h_0;
 	}
+	
+	public void setH_0(double h0){
+		this.h_0 = h0;
+	}
+	public void setLongueur(double longu){
+		this.longueur = longu;
+	}
+	
+	public void setLargeur(double larg){
+		this.largeur = larg;
+	}
+	
+	public void setHauteur(double haut){
+		this.hauteur = haut;
+	}
 }
