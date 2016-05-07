@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,8 +35,13 @@ public class IHM {
 	private JPanel m_panelOptionPompe;
 	private JPanel m_panelCoutChangementMode;
 	private JPanel m_panelOptionReservoirs;
+	private JPanel m_panelOptionCheckbox;
 	private JTextArea m_textareaResults;
 	private JScrollPane m_scrollPane;
+	private JCheckBox m_checkboxContrainteReservoir;
+	private JCheckBox m_checkboxContrainteCoutChangement;
+	private JCheckBox m_checkboxContrainteRefroidissement;
+	private JCheckBox m_checkboxContrainteRegulation;
 	private JTextField m_textfieldP_T_Min;
 	private JTextField m_textfieldP_T_Max;
 	private JTextField m_textfieldP_P_Min;
@@ -58,6 +64,9 @@ public class IHM {
 	public IHM(){
 		//Initialise le panel principale
 		initMainFrame();
+		
+		//Panel Option checkbox
+		initPanelOptionCheckbox();
 		
 		//Panel Option puissance Turbine Pompe
 		initOptionPompeTurbine();
@@ -93,6 +102,39 @@ public class IHM {
 		m_mainFrame.setContentPane(m_panelMainContainer);
 	}
 
+	private void initPanelOptionCheckbox(){
+		//Border du panel 		
+		m_panelOptionCheckbox = new JPanel();
+		m_panelOptionCheckbox.setBorder(BorderFactory.createTitledBorder("Activation / Desactivation des contraintes")); 
+		m_panelOptionCheckbox.setLayout(new GridLayout(0,2));
+
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));		
+
+	    //Checkbox reservoir
+	    m_checkboxContrainteReservoir = new JCheckBox("Reservoir");
+	    leftPanel.add(m_checkboxContrainteReservoir);
+
+	    //Checkbox cout changement
+	    m_checkboxContrainteCoutChangement = new JCheckBox("Cout Changement");
+	    leftPanel.add(m_checkboxContrainteCoutChangement);
+
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.PAGE_AXIS));		
+
+	    //Checkbox Refroidissement
+	    m_checkboxContrainteRefroidissement = new JCheckBox("Refroidissement");
+	    rightPanel.add(m_checkboxContrainteRefroidissement);
+
+	    //Cpa
+	    m_checkboxContrainteRegulation = new JCheckBox("Regulation");
+	    rightPanel.add(m_checkboxContrainteRegulation);
+
+	    m_panelOptionCheckbox.add(leftPanel);
+	    m_panelOptionCheckbox.add(rightPanel);
+		m_panelMainContainer.add(m_panelOptionCheckbox);
+	}
+	
 	private void initOptionPompeTurbine(){
 		JPanel horizontalPanelOptionTurbinePompe = new JPanel();
 		horizontalPanelOptionTurbinePompe.setLayout(new GridLayout(0,2));
@@ -327,6 +369,10 @@ public class IHM {
 		Reservoir reservoirInf = instance.getInf();
 		Reservoir reservoirSup = instance.getSup();
 		
+		m_checkboxContrainteReservoir.setSelected(instance.isContrainteReservoirActivated());
+		m_checkboxContrainteCoutChangement.setSelected(instance.isContrainteCoutChangementActivated());
+		m_checkboxContrainteRefroidissement.setSelected(instance.isContrainteRefroidissementActivated());
+		m_checkboxContrainteRegulation.setSelected(instance.isContrainteRegulationActivated());
 		m_textfieldP_T_Min.setText(String.valueOf(tp.getP_T_min()));
 		m_textfieldP_T_Max.setText(String.valueOf(tp.getP_T_max()));
 		m_textfieldP_P_Min.setText(String.valueOf(tp.getP_P_min()));
@@ -347,6 +393,10 @@ public class IHM {
 	
 	private void configInstanceFromIHM(){
 		try {
+			m_instance.setContrainteReservoirActivated(m_checkboxContrainteReservoir.isSelected());
+			m_instance.setContrainteCoutChangementActivated(m_checkboxContrainteCoutChangement.isSelected());
+			m_instance.setContrainteRefroidissementActivated(m_checkboxContrainteRefroidissement.isSelected());
+			m_instance.setContrainteRegulationActivated(m_checkboxContrainteRegulation.isSelected());
 			m_instance.setDelta_H(Double.valueOf(m_textfieldDelta_H.getText()));
 			m_instance.getInf().setH_0(Double.valueOf(m_textfieldH_0_inf.getText()));
 			m_instance.getSup().setH_0(Double.valueOf(m_textfieldH_0_sup.getText()));

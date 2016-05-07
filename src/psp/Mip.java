@@ -14,11 +14,6 @@ public class Mip {
     private Instance instance;
     private IloCplex model;
 
-    private boolean reservoir       = true;
-    private boolean coutChangement  = true;
-    private boolean refroidissement = true;
-    private boolean regulation      = false;
-
     private IloNumVar[] arrayPtt;
     private IloNumVar[] arrayPpt;
     private IloIntVar[] arrayMpt;
@@ -63,8 +58,8 @@ public class Mip {
             System.out.println("Solution : ");
             System.out.println("\tcout.length = " + instance.getCout().length);
             for (int i = 0; i < instance.getCout().length; i++) {
-                if (reservoir) {
-                    if (coutChangement) {
+                if (instance.isContrainteReservoirActivated()) {
+                    if (instance.isContrainteCoutChangementActivated()) {
                         res.addTimeResult(new TimeResult(i,
                                                          model.getValue(this.arrayPtt[i]),
                                                          model.getValue(this.arrayMtt[i]),
@@ -97,7 +92,7 @@ public class Mip {
                 System.out.println("\t\tMt" + i + " = " + model.getValue(this.arrayMtt[i]));
                 System.out.println("\t\tPp" + i + " = " + model.getValue(this.arrayPpt[i]));
                 System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayMpt[i]));
-                if (reservoir) {
+                if (instance.isContrainteReservoirActivated()) {
                     System.out.println("\t\tMp" + i + " = " + model.getValue(this.arrayHt[i]));
                 }
                 System.out.println("----------------------------------------");
@@ -208,16 +203,16 @@ public class Mip {
      */
     private void initConstraints() throws IloException {
         initConstraintesPuissance();
-        if (reservoir) {
+        if (instance.isContrainteReservoirActivated()) {
             initContraintesReservoir();
         }
-        if (coutChangement) {
+        if (instance.isContrainteCoutChangementActivated()) {
             initCoutChangementFonction();
         }
-        if (refroidissement) {
+        if (instance.isContrainteRefroidissementActivated()) {
             initConstraintsRefroidissmenet();
         }
-        if (regulation) {
+        if (instance.isContrainteRegulationActivated()) {
             initContraintesRegulation();
         }
     }
@@ -456,29 +451,5 @@ public class Mip {
         // Max (SOMME( CEt(Ptt + Ppt) + Cat * Bat + Cta * Bta + Cap * Bap + Cpa * Bpa))
         model.addMaximize(obj,
                           "Objective");
-    }
-
-    public boolean isCoutChangement() {
-        return coutChangement;
-    }
-
-    public void setCoutChangement(boolean coutChangement) {
-        this.coutChangement = coutChangement;
-    }
-
-    public boolean isRefroidissement() {
-        return refroidissement;
-    }
-
-    public void setRefroidissement(boolean refroidissement) {
-        this.refroidissement = refroidissement;
-    }
-
-    public boolean isRegulation() {
-        return regulation;
-    }
-
-    public void setRegulation(boolean regulation) {
-        this.regulation = regulation;
     }
 }

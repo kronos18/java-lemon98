@@ -10,6 +10,11 @@ public class Instance {
 	private double[] cout;
 	private double[] regulation;
 	private double delta_H;
+    private boolean m_bReservoir       = true;
+    private boolean m_bCoutChangement  = true;
+    private boolean m_bRefroidissement = true;
+    private boolean m_bRegulation      = false;
+
 	
 	public Instance(TurbinePompe[] tps, Reservoir sup, Reservoir inf, double[] cout, double[] regulation, double delta_H) {
 		this.tPs = tps;
@@ -50,6 +55,38 @@ public class Instance {
 
 	public void setDelta_H(double deltaH) {
 		this.delta_H = deltaH;
+	}
+
+	public boolean isContrainteReservoirActivated() {
+		return m_bReservoir;
+	}
+
+	public boolean isContrainteCoutChangementActivated() {
+		return m_bCoutChangement;
+	}
+
+	public boolean isContrainteRefroidissementActivated() {
+		return m_bRefroidissement;
+	}
+
+	public boolean isContrainteRegulationActivated() {
+		return m_bRegulation;
+	}
+
+	public void setContrainteReservoirActivated(boolean bActivated) {
+		m_bReservoir = bActivated;
+	}
+
+	public void setContrainteCoutChangementActivated(boolean bActivated) {
+		m_bCoutChangement = bActivated;
+	}
+
+	public void setContrainteRefroidissementActivated(boolean bActivated) {
+		m_bRefroidissement = bActivated;
+	}
+
+	public void setContrainteRegulationActivated(boolean bActivated) {
+		m_bRegulation = bActivated;
 	}
 	
 }

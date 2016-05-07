@@ -54,13 +54,13 @@ public class TimeResult {
 		else
 			sRes += "\r\n\t\tMode arrêt...";
 		
-		if (m_dBat)
+		if (m_dBat != null && m_dBat)
 			sRes += "\r\n\t\tChangement arret vers turbine";
-		if (m_dBta)
+		if (m_dBta != null && m_dBta)
 			sRes += "\r\n\t\tChangement turbine vers arret";
-		if (m_dBap)
+		if (m_dBap != null && m_dBap)
 			sRes += "\r\n\t\tChangement arret vers pompe";
-		if (m_dBpa)
+		if (m_dBpa != null && m_dBpa)
 			sRes += "\r\n\t\tChangement pompe vers arret";
 		
 		if (m_dVariationHauteur != null)

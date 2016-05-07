@@ -103,7 +103,7 @@ public class Oleoduc {
 		 * X1b + X2b – Xba <= 50000
 		 */
 		IloNumExpr expr9 = model.diff(model.sum(X1b, X2b), Xba);
-		model.addLe(expr9, 50000.0, "X1b + X2b – Xba <= 50000");		
+		model.addLe(expr9, 50000.0, "X1b + X2b - Xba <= 50000");		
 		
 		//Exporte et calcule
 		model.exportModel("Data" + File.separator + "lps" + File.separator + "transport.lp");
