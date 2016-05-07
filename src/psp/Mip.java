@@ -188,14 +188,6 @@ public class Mip {
         this.arrayBpat = model.intVarArray(cout.length,
                                            0,
                                            1);
-
-        //Question 5
-		/*
-		 * Incr {0, .., 11}. Increment indiquant le nombre d'heure de fonctionnement de la turbine-pompe depuis son dernier arret
-		 */
-        this.arrayIncrRefroidissement = model.intVarArray(cout.length,
-                                                          0,
-                                                          11);
     }
 
     /**
@@ -353,29 +345,29 @@ public class Mip {
      * Fonction initialisant les contraintes de refroidissement
      */
     private void initConstraintsRefroidissmenet() throws IloException {
-        //Question 5
+    	//Question 5
 		/*
-		 * Incr(t) = incr(t-1) * (Mtt + Mpt) + Mtt + Mpt
+		 * Pour tout t, SOMME(Mtt + Mpt) <= 12, avec t allant de t à t - 13. (une machine ne doit pas fonctionner plus de 12h a la suite)
 		 */
-        IloNumExpr expr1, expr2, expr3;
-        expr1 = model.intVar(0,
-                             0);
-        //this.arrayIncrRefroidissement[0] = model.intVar(0, 0);
-        for (int i = 3; i < this.arrayIncrRefroidissement.length; i++) {
-            for (int j = i; j < i - 3; j--) {
-                expr1 = model.sum(expr1,
-                                  model.sum(this.arrayMtt[j],
-                                            this.arrayMpt[j]));
-            }
-            model.addLe(expr1,
-                        3);
-            expr1 = model.intVar(0,
-                                 0);
-			/*expr1 = model.sum(this.arrayMtt[i], this.arrayMpt[i]);
-			expr2 = model.prod(this.arrayIncrRefroidissement[i-1], expr1);
-			expr3 = model.sum(expr2, expr1);
-			model.addEq(this.arrayIncrRefroidissement[i], expr3);*/
 
+    	int iNbHoursFonctionnementMax = 12;
+    	int iNbHoursToVerify = iNbHoursFonctionnementMax + 1;
+        IloNumExpr expr, expr1;
+
+    	if (instance.getCout().length < iNbHoursToVerify)
+    		return;
+    	
+        for (int i = iNbHoursToVerify; i < instance.getCout().length; i++) {
+        	expr = model.numVar(0, 0);
+        	
+            for (int j = i; j >= i - iNbHoursToVerify; j--) {
+	            //Mtt + Mpt
+	            expr1 = model.sum(this.arrayMtt[j], this.arrayMpt[j]);
+	
+	            expr = model.sum(expr, expr1);
+            }
+            
+            model.addLe(expr, iNbHoursFonctionnementMax);
         }
     }
 
