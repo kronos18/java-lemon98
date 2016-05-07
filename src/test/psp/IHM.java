@@ -372,6 +372,6 @@ public class IHM {
 	}
 	
 	public void showMessageDialogError(Exception exc, String sMessageSup) {
-		JOptionPane.showMessageDialog(m_mainFrame, "Une erreur a été rencontrée :\n" + sMessageSup, "Erreur", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(m_mainFrame, "Une erreur a ete rencontree :\n" + sMessageSup, "Erreur", JOptionPane.ERROR_MESSAGE);
 	}
 }
