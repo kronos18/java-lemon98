@@ -45,14 +45,14 @@ public class TimeResult {
 	
 	@Override
 	public String toString(){
-		String sRes = "\r\n\tIterration numéro " + m_iTime;
+		String sRes = "\r\n\tIteration numero " + m_iTime;
 		
 		if (m_dModeTurbine)
 			sRes += "\r\n\t\tMode Turbine.\r\n\t\tPuissance = " + m_dPuissanceTurbine;
 		else if (m_dModePompe)
 			sRes += "\r\n\t\tMode Pompe.\r\n\t\tPuissance = " + m_dPuissancePompe;
 		else
-			sRes += "\r\n\t\tMode arrêt...";
+			sRes += "\r\n\t\tMode arret...";
 		
 		if (m_dBat != null && m_dBat)
 			sRes += "\r\n\t\tChangement arret vers turbine";
