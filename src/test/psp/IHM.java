@@ -36,6 +36,7 @@ public class IHM {
 	private JPanel m_panelCoutChangementMode;
 	private JPanel m_panelOptionReservoirs;
 	private JPanel m_panelOptionCheckbox;
+	private JPanel m_panelOptionRefroidissement;
 	private JTextArea m_textareaResults;
 	private JScrollPane m_scrollPane;
 	private JCheckBox m_checkboxContrainteReservoir;
@@ -58,6 +59,7 @@ public class IHM {
 	private JTextField m_textfieldH_0_sup;
 	private JTextField m_textfieldH_0_inf;
 	private JTextField m_textfieldDelta_H;
+	private JTextField m_textfieldNbHoursRefroidissement;
 	private JButton m_btnLancerLeCalcul;
 	private Instance m_instance;
 	
@@ -76,6 +78,9 @@ public class IHM {
 		
 		//Panel option reservoirs
 		initOptionReservoirs();
+		
+		//Panel option refroidissement
+		initOptionRefroidissement();
 		
 		//Initialise la zone de texte pour afficher les resultats
 		initLogTextArea();
@@ -301,6 +306,32 @@ public class IHM {
 	    m_panelOptionReservoirs.add(rightPanel);
 		m_panelMainContainer.add(m_panelOptionReservoirs);
 	}
+
+	private void initOptionRefroidissement(){
+		//Border du panel 		
+		m_panelOptionRefroidissement = new JPanel();
+		m_panelOptionRefroidissement.setBorder(BorderFactory.createTitledBorder("Caracteristiques de refroidissement")); 
+		m_panelOptionRefroidissement.setLayout(new GridLayout(0,2));
+		
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));		
+
+	    //NbHoursRefroidissement
+	    JPanel line1 = new JPanel();
+	    m_textfieldNbHoursRefroidissement = new JTextField("", 15);
+	    line1.add(new JLabel("Nombre d'heures avant surchauffe : "));
+	    line1.add(m_textfieldNbHoursRefroidissement);
+	    leftPanel.add(line1);
+
+
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.PAGE_AXIS));
+		
+		
+		m_panelOptionRefroidissement.add(leftPanel);
+		m_panelOptionRefroidissement.add(rightPanel);
+		m_panelMainContainer.add(m_panelOptionRefroidissement);
+	}
 	
 	private void initLogTextArea(){
 		m_textareaResults = new JTextArea(20, 10);
@@ -388,7 +419,8 @@ public class IHM {
 		m_textfieldLongueur.setText(String.valueOf(reservoirSup.getLongueur()));
 		m_textfieldH_0_sup.setText(String.valueOf(reservoirSup.getH_0()));
 		m_textfieldH_0_inf.setText(String.valueOf(reservoirInf.getH_0()));
-		m_textfieldDelta_H.setText(String.valueOf(instance.getDelta_H()));			
+		m_textfieldDelta_H.setText(String.valueOf(instance.getDelta_H()));
+		m_textfieldNbHoursRefroidissement.setText(String.valueOf(instance.getNbHoursRefroidissement()));
 	}
 	
 	private void configInstanceFromIHM(){
@@ -416,6 +448,7 @@ public class IHM {
 			m_instance.getTP().setP_P_min(Double.valueOf(m_textfieldP_P_Min.getText()));
 			m_instance.getTP().setP_T_max(Double.valueOf(m_textfieldP_T_Max.getText()));
 			m_instance.getTP().setP_T_min(Double.valueOf(m_textfieldP_T_Min.getText()));
+			m_instance.setNbHoursRefroidissement(Integer.valueOf(m_textfieldNbHoursRefroidissement.getText()));
 		} catch (Exception exc) {
 			showMessageDialogError(exc, "Mauvaises saisies !!!");
 		}

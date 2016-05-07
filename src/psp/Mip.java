@@ -350,7 +350,7 @@ public class Mip {
 		 * Pour tout t, SOMME(Mtt + Mpt) <= 12, avec t allant de t à t - 13. (une machine ne doit pas fonctionner plus de 12h a la suite)
 		 */
 
-    	int iNbHoursFonctionnementMax = 12;
+    	int iNbHoursFonctionnementMax = instance.getNbHoursRefroidissement();
     	int iNbHoursToVerify = iNbHoursFonctionnementMax + 1;
         IloNumExpr expr, expr1;
 
@@ -375,9 +375,11 @@ public class Mip {
      * Fonction initialisant les contraintes liees a la regulation
      */
     private void initContraintesRegulation() throws IloException {
-        // TODO Ã  vous de jouer
-        System.out.println("Regulation non implementee");
-        System.exit(1);
+        //Question 6
+    	/*
+    	 * Pour garantir la regulation de puissance, il faut que la psp soit en mode turbine afin de pouvoir augmenter le debit et donc la puissance, cela sans changer le mode de fonctionnement.
+    	 * Il faut aussi beaucoup d'eau dans le reservoir.
+    	 */
     }
 
     /**

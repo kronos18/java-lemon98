@@ -13,7 +13,8 @@ public class Instance {
     private boolean m_bReservoir       = true;
     private boolean m_bCoutChangement  = true;
     private boolean m_bRefroidissement = true;
-    private boolean m_bRegulation      = false;
+    private boolean m_bRegulation      = true;
+    private int m_iNbHoursRefroidissement      = 12;
 
 	
 	public Instance(TurbinePompe[] tps, Reservoir sup, Reservoir inf, double[] cout, double[] regulation, double delta_H) {
@@ -88,5 +89,13 @@ public class Instance {
 	public void setContrainteRegulationActivated(boolean bActivated) {
 		m_bRegulation = bActivated;
 	}
-	
+
+	public int getNbHoursRefroidissement() {
+		return m_iNbHoursRefroidissement;
+	}
+
+	public void setNbHoursRefroidissement(int iNbHoursRefroidissement) {
+		m_iNbHoursRefroidissement = iNbHoursRefroidissement;
+	}
+
 }
