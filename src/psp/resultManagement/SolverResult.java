@@ -9,12 +9,14 @@ public class SolverResult {
 	private Boolean m_bFailed;
 	private String m_sSolutionStatus;
 	private Double m_dObjValue;
+	private int m_iNbPSP;
 	private ArrayList<TimeResult> m_lAllResults;
 
-	public SolverResult(Boolean bFailed) {
+	public SolverResult(Boolean bFailed, int iNbPSP) {
 		m_bFailed = bFailed;
 		m_sSolutionStatus = "";
 		m_dObjValue = 0.0;
+		m_iNbPSP = iNbPSP;
 		m_lAllResults = new ArrayList<TimeResult>();
 	}
 
@@ -31,9 +33,10 @@ public class SolverResult {
 			else
 				sRes += "Status de la solution : " + m_sSolutionStatus + ".\n";
 
-			sRes += "Gain obtenu pour le fonctionnement des pompes-turbines : " + m_dObjValue + " euros.\n";
+			sRes += "Gain obtenu pour le fonctionnement d'une pompe-turbine : " + m_dObjValue + " euros.\n";
+			sRes += "Gain obtenu pour le fonctionnement des " + m_iNbPSP + " pompes-turbines : " + m_dObjValue * m_iNbPSP + " euros.\n";
 			
-			sRes += "\nDétails du fonctionnement des pompes-turbines :\n";
+			sRes += "\nDétails du fonctionnement d'une pompe-turbine :\n";
 			
 			for(final TimeResult res : m_lAllResults)
 				sRes += res.toString();	

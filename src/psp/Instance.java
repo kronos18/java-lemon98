@@ -15,10 +15,15 @@ public class Instance {
     private boolean m_bRefroidissement = true;
     private boolean m_bRegulation      = true;
     private int m_iNbHoursRefroidissement      = 12;
+    private int m_iNbPSP      = 4;
 
 	
-	public Instance(TurbinePompe[] tps, Reservoir sup, Reservoir inf, double[] cout, double[] regulation, double delta_H) {
-		this.tPs = tps;
+	public Instance(TurbinePompe tp, Reservoir sup, Reservoir inf, double[] cout, double[] regulation, double delta_H) {
+		this.tPs = new TurbinePompe[m_iNbPSP];
+		for (int i = 0; i < m_iNbPSP; i++){
+			this.tPs[i] = tp;
+		}
+		
 		this.sup = sup;
 		this.inf = inf;
 		this.cout = cout;
@@ -96,6 +101,21 @@ public class Instance {
 
 	public void setNbHoursRefroidissement(int iNbHoursRefroidissement) {
 		m_iNbHoursRefroidissement = iNbHoursRefroidissement;
+	}
+
+	public int getNbPSP() {
+		return m_iNbPSP;
+	}
+
+	public void setNbPSP(int iNbPSP) {
+		TurbinePompe tp = this.tPs[0];
+		
+		m_iNbPSP = iNbPSP;
+		
+		this.tPs = new TurbinePompe[m_iNbPSP];
+		for (int i = 0; i < m_iNbPSP; i++){
+			this.tPs[i] = tp;
+		}
 	}
 
 }

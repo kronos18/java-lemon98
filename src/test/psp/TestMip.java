@@ -23,7 +23,7 @@ public class TestMip {
 		
 		try{
 			sPath = "Data"+File.separator+"Instances"+File.separator+"instance10.txt";
-			Instance instance = Parser.lireInstance(sPath, 4);
+			Instance instance = Parser.lireInstance(sPath);
 		
 			ihmManager.updateIHMWithValuesInFile(instance);		
 		} catch(Exception exc){

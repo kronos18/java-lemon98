@@ -13,11 +13,11 @@ public class Parser {
 	 * Fonction construisant une instance à partir d'un fichier d'instance.
 	 * Requiert que le fichier soit bien formatté.
 	 */
-	public static Instance lireInstance(String file, int nbTP) throws IOException {
+	public static Instance lireInstance(String file) throws IOException {
 		FileInputStream fis = new FileInputStream(file);
 		InputStreamReader isr = new InputStreamReader(fis);
 		BufferedReader br = new BufferedReader(isr);
-		TurbinePompe[] tps = lireTurbinePompe(br, nbTP);
+		TurbinePompe tp = lireTurbinePompe(br);
 		Reservoir[] reservoir = lireReservoir(br);
 		double delta_H = lireDouble(prochaineLigne(br));
 		double[] cost = lireTableauDouble(br);
@@ -25,13 +25,13 @@ public class Parser {
 		br.close();
 		isr.close();
 		fis.close();
-		return new Instance(tps, reservoir[0], reservoir[1], cost, regulationPrice, delta_H);
+		return new Instance(tp, reservoir[0], reservoir[1], cost, regulationPrice, delta_H);
 	}
 
 	/**
 	 * Fonction construisant nbTP turbine pompe identique à partir du fichier.
 	 */
-	private static TurbinePompe[] lireTurbinePompe(BufferedReader br, int nbTP) throws IOException {
+	private static TurbinePompe lireTurbinePompe(BufferedReader br) throws IOException {
 		double p_T_min = lireDouble(prochaineLigne(br));
 		double p_T_max = lireDouble(prochaineLigne(br));
 		double p_P_min = lireDouble(prochaineLigne(br));
@@ -42,11 +42,8 @@ public class Parser {
 		double c_TA = lireDouble(prochaineLigne(br));
 		double c_AP = lireDouble(prochaineLigne(br));
 		double c_PA = lireDouble(prochaineLigne(br));
-		TurbinePompe[] tps = new TurbinePompe[nbTP];
-		for (int i=0; i<nbTP; i++) {
-			tps[i] = new TurbinePompe(p_P_min, p_P_max, p_T_min, p_T_max, c_AP, c_PA, c_AT, c_TA, alpha_P, alpha_T); 
-		}
-		return tps;
+		
+		return new TurbinePompe(p_P_min, p_P_max, p_T_min, p_T_max, c_AP, c_PA, c_AT, c_TA, alpha_P, alpha_T);
 	}
 
 	/**

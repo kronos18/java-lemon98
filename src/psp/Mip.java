@@ -47,7 +47,7 @@ public class Mip {
 
         System.out.println("\nStart solving...");
         if (model.solve()) {
-            res = new SolverResult(false);
+            res = new SolverResult(false, instance.getNbPSP());
             System.out.println("\nSolution status = " + model.getStatus());
             res.setSolutionStatus(model.getStatus()
                                        .toString());
@@ -99,7 +99,7 @@ public class Mip {
             }
         }
         else {
-            res = new SolverResult(true);
+            res = new SolverResult(true, instance.getNbPSP());
             fail("No feaisible solution has been found");
         }
 

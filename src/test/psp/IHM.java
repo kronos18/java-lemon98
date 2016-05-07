@@ -37,6 +37,7 @@ public class IHM {
 	private JPanel m_panelOptionReservoirs;
 	private JPanel m_panelOptionCheckbox;
 	private JPanel m_panelOptionRefroidissement;
+	private JPanel m_panelOptionNbPSP;
 	private JTextArea m_textareaResults;
 	private JScrollPane m_scrollPane;
 	private JCheckBox m_checkboxContrainteReservoir;
@@ -60,12 +61,16 @@ public class IHM {
 	private JTextField m_textfieldH_0_inf;
 	private JTextField m_textfieldDelta_H;
 	private JTextField m_textfieldNbHoursRefroidissement;
+	private JTextField m_textfieldNbPSP;
 	private JButton m_btnLancerLeCalcul;
 	private Instance m_instance;
 	
 	public IHM(){
 		//Initialise le panel principale
 		initMainFrame();
+
+		//Panel Option nombre de PSP
+		initPanelOptionNbPSP();
 		
 		//Panel Option checkbox
 		initPanelOptionCheckbox();
@@ -95,8 +100,7 @@ public class IHM {
 		m_mainFrame = new JFrame("A JFrame");
 		m_mainFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Max\\Documents\\M2_MIAGE\\Analyse Fonctionnelle Energie\\Guillaume\\psp_student\\Data\\icon.png"));
 		m_mainFrame.setTitle("Module d'optimisation pompe-turbine");
-		m_mainFrame.setSize(900, 700);
-		m_mainFrame.setLocation(300, 50);
+		m_mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		m_mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		m_mainFrame.getContentPane().add(BorderLayout.CENTER, new JTextArea(10, 40));
 		
@@ -138,6 +142,26 @@ public class IHM {
 	    m_panelOptionCheckbox.add(leftPanel);
 	    m_panelOptionCheckbox.add(rightPanel);
 		m_panelMainContainer.add(m_panelOptionCheckbox);
+	}
+	
+	private void initPanelOptionNbPSP(){
+		//Border du panel 		
+		m_panelOptionNbPSP = new JPanel();
+		m_panelOptionNbPSP.setBorder(BorderFactory.createTitledBorder("Nombre de pompes turbines")); 
+		m_panelOptionNbPSP.setLayout(new GridLayout(0,2));
+
+		JPanel leftPanel = new JPanel();
+		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.PAGE_AXIS));		
+
+	    //TextField nombre de PSP
+	    JPanel line1 = new JPanel();
+	    m_textfieldNbPSP = new JTextField("", 15);
+	    line1.add(new JLabel("Nombre de PSP : "));
+	    line1.add(m_textfieldNbPSP);
+	    m_panelOptionNbPSP.add(line1);
+
+		m_panelOptionNbPSP.add(leftPanel);
+		m_panelMainContainer.add(m_panelOptionNbPSP);
 	}
 	
 	private void initOptionPompeTurbine(){
@@ -421,6 +445,7 @@ public class IHM {
 		m_textfieldH_0_inf.setText(String.valueOf(reservoirInf.getH_0()));
 		m_textfieldDelta_H.setText(String.valueOf(instance.getDelta_H()));
 		m_textfieldNbHoursRefroidissement.setText(String.valueOf(instance.getNbHoursRefroidissement()));
+		m_textfieldNbPSP.setText(String.valueOf(instance.getNbPSP()));
 	}
 	
 	private void configInstanceFromIHM(){
@@ -449,6 +474,7 @@ public class IHM {
 			m_instance.getTP().setP_T_max(Double.valueOf(m_textfieldP_T_Max.getText()));
 			m_instance.getTP().setP_T_min(Double.valueOf(m_textfieldP_T_Min.getText()));
 			m_instance.setNbHoursRefroidissement(Integer.valueOf(m_textfieldNbHoursRefroidissement.getText()));
+			m_instance.setNbPSP(Integer.valueOf(m_textfieldNbPSP.getText()));
 		} catch (Exception exc) {
 			showMessageDialogError(exc, "Mauvaises saisies !!!");
 		}
