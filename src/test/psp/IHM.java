@@ -7,6 +7,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +27,10 @@ import javax.swing.JScrollPane;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Date;
 
 public class IHM {
 
@@ -176,21 +181,21 @@ public class IHM {
 	    //Puissance min
 	    JPanel line1 = new JPanel();
 	    m_textfieldP_T_Min = new JTextField("", 15);
-	    line1.add(new JLabel("Puissance minimale : "));
+	    line1.add(new JLabel("Puissance minimale (en MW) : "));
 	    line1.add(m_textfieldP_T_Min);
 	    m_panelOptionTurbine.add(line1);
 
 	    //Puissance max
 	    JPanel line2 = new JPanel();
 	    m_textfieldP_T_Max = new JTextField("", 15);
-	    line2.add(new JLabel("Puissance maximale : "));
+	    line2.add(new JLabel("Puissance maximale (en MW) : "));
 	    line2.add(m_textfieldP_T_Max);
 	    m_panelOptionTurbine.add(line2);
 
 	    //Alpha T
 	    JPanel line3 = new JPanel();
 	    m_textfieldAlpha_T = new JTextField("", 15);
-	    line3.add(new JLabel("Alpha_T : "));
+	    line3.add(new JLabel("Alpha_T (en MW) : "));
 	    line3.add(m_textfieldAlpha_T);
 	    m_panelOptionTurbine.add(line3);
 	    	    
@@ -204,21 +209,21 @@ public class IHM {
 	    //Puissance min
 	    JPanel linep1 = new JPanel();
 	    m_textfieldP_P_Min = new JTextField("", 15);
-	    linep1.add(new JLabel("Puissance minimale : "));
+	    linep1.add(new JLabel("Puissance minimale (en MW) : "));
 	    linep1.add(m_textfieldP_P_Min);
 	    m_panelOptionPompe.add(linep1);
 
 	    //Puissance max
 	    JPanel linep2 = new JPanel();
 	    m_textfieldP_P_Max = new JTextField("", 15);
-	    linep2.add(new JLabel("Puissance maximale : "));
+	    linep2.add(new JLabel("Puissance maximale (en MW) : "));
 	    linep2.add(m_textfieldP_P_Max);
 	    m_panelOptionPompe.add(linep2);
 
 	    //Alpha P
 	    JPanel linep3 = new JPanel();
 	    m_textfieldAlpha_P = new JTextField("", 15);
-	    linep3.add(new JLabel("Alpha_P : "));
+	    linep3.add(new JLabel("Alpha_P (en MW) : "));
 	    linep3.add(m_textfieldAlpha_P);
 	    m_panelOptionPompe.add(linep3);
 
@@ -239,14 +244,14 @@ public class IHM {
 	    //Cat
 	    JPanel line1 = new JPanel();
 	    m_textfieldCout_A_T = new JTextField("", 15);
-	    line1.add(new JLabel("Cout Arret -> Turbine : "));
+	    line1.add(new JLabel("Cout Arret -> Turbine (en euros) : "));
 	    line1.add(m_textfieldCout_A_T);
 	    leftPanel.add(line1);
 
 	    //Cta
 	    JPanel line2 = new JPanel();
 	    m_textfieldCout_T_A = new JTextField("", 15);
-	    line2.add(new JLabel("Cout Turbine -> Arret : "));
+	    line2.add(new JLabel("Cout Turbine -> Arret (en euros) : "));
 	    line2.add(m_textfieldCout_T_A);
 	    leftPanel.add(line2);
 
@@ -256,14 +261,14 @@ public class IHM {
 	    //Cap
 	    JPanel line3 = new JPanel();
 	    m_textfieldCout_A_P = new JTextField("", 15);
-	    line3.add(new JLabel("Cout Arret -> Pompe : "));
+	    line3.add(new JLabel("Cout Arret -> Pompe (en euros) : "));
 	    line3.add(m_textfieldCout_A_P);
 	    rightPanel.add(line3);
 
 	    //Cpa
 	    JPanel line4 = new JPanel();
 	    m_textfieldCout_P_A = new JTextField("", 15);
-	    line4.add(new JLabel("Cout Pompe -> Arret : "));
+	    line4.add(new JLabel("Cout Pompe -> Arret (en euros) : "));
 	    line4.add(m_textfieldCout_P_A);
 	    rightPanel.add(line4);
 
@@ -284,21 +289,21 @@ public class IHM {
 	    //Hauteur
 	    JPanel line1 = new JPanel();
 	    m_textfieldHauteur = new JTextField("", 15);
-	    line1.add(new JLabel("Hauteur : "));
+	    line1.add(new JLabel("Hauteur (en mètre) : "));
 	    line1.add(m_textfieldHauteur);
 	    leftPanel.add(line1);
 
 	    //Longueur
 	    JPanel line2 = new JPanel();
 	    m_textfieldLongueur = new JTextField("", 15);
-	    line2.add(new JLabel("Longueur : "));
+	    line2.add(new JLabel("Longueur (en mètre) : "));
 	    line2.add(m_textfieldLongueur);
 	    leftPanel.add(line2);
 
 	    //Largeur
 	    JPanel line3 = new JPanel();
 	    m_textfieldLargeur = new JTextField("", 15);
-	    line3.add(new JLabel("Largeur : "));
+	    line3.add(new JLabel("Largeur (en mètre) : "));
 	    line3.add(m_textfieldLargeur);
 	    leftPanel.add(line3);
 
@@ -308,21 +313,21 @@ public class IHM {
 	    //H_0_sup
 	    JPanel line4 = new JPanel();
 	    m_textfieldH_0_sup = new JTextField("", 15);
-	    line4.add(new JLabel("H_0_sup : "));
+	    line4.add(new JLabel("H_0_sup (en mètre) : "));
 	    line4.add(m_textfieldH_0_sup);
 	    rightPanel.add(line4);
 
 	    //H_0_inf
 	    JPanel line5 = new JPanel();
 	    m_textfieldH_0_inf = new JTextField("", 15);
-	    line5.add(new JLabel("H_0_inf : "));
+	    line5.add(new JLabel("H_0_inf (en mètre) : "));
 	    line5.add(m_textfieldH_0_inf);
 	    rightPanel.add(line5);
 
 	    //H_0_inf
 	    JPanel line6 = new JPanel();
 	    m_textfieldDelta_H = new JTextField("", 15);
-	    line6.add(new JLabel("Delta_H : "));
+	    line6.add(new JLabel("Delta_H (en mètre) : "));
 	    line6.add(m_textfieldDelta_H);
 	    rightPanel.add(line6);
 
@@ -360,7 +365,6 @@ public class IHM {
 	private void initLogTextArea(){
 		m_textareaResults = new JTextArea(20, 10);
 		m_textareaResults.setEditable(false);
-
 		//Scroll pane for the textPane
 		m_scrollPane = new JScrollPane(m_textareaResults);
 		m_scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -412,6 +416,13 @@ public class IHM {
 	
 	public void updateIHMAfterSolve(SolverResult res){
 		m_textareaResults.setText(res.toString());
+		m_textareaResults.setCaretPosition(0);
+
+//		JOptionPane.showMessageDialog(m_mainFrame, res.getShortString());
+		JOptionPane pane = new JOptionPane(res.getShortString());
+		JDialog dialog = pane.createDialog(m_mainFrame, "Resultat du " +  LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-uuuu hh:mm:ss")));
+		dialog.setModal(false);
+		dialog.show();
 	}
 
 	public void cleanIHMBeforeSolve(){
@@ -420,7 +431,7 @@ public class IHM {
 
 	public void updateIHMWithValuesInFile(Instance instance){
 		m_instance = instance;
-		TurbinePompe tp = instance.getTP();
+		TurbinePompe tp = instance.getTP(0);
 		Reservoir reservoirInf = instance.getInf();
 		Reservoir reservoirSup = instance.getSup();
 		
@@ -463,18 +474,21 @@ public class IHM {
 			m_instance.getInf().setLongueur(Double.valueOf(m_textfieldLongueur.getText()));
 			m_instance.getSup().setLargeur(Double.valueOf(m_textfieldLargeur.getText()));
 			m_instance.getInf().setLargeur(Double.valueOf(m_textfieldLargeur.getText()));
-			m_instance.getTP().setC_PA(Double.valueOf(m_textfieldCout_P_A.getText()));
-			m_instance.getTP().setC_AP(Double.valueOf(m_textfieldCout_A_P.getText()));
-			m_instance.getTP().setC_AT(Double.valueOf(m_textfieldCout_A_T.getText()));
-			m_instance.getTP().setC_TA(Double.valueOf(m_textfieldCout_T_A.getText()));
-			m_instance.getTP().setAlpha_P(Double.valueOf(m_textfieldAlpha_P.getText()));
-			m_instance.getTP().setAlpha_T(Double.valueOf(m_textfieldAlpha_T.getText()));
-			m_instance.getTP().setP_P_max(Double.valueOf(m_textfieldP_P_Max.getText()));
-			m_instance.getTP().setP_P_min(Double.valueOf(m_textfieldP_P_Min.getText()));
-			m_instance.getTP().setP_T_max(Double.valueOf(m_textfieldP_T_Max.getText()));
-			m_instance.getTP().setP_T_min(Double.valueOf(m_textfieldP_T_Min.getText()));
-			m_instance.setNbHoursRefroidissement(Integer.valueOf(m_textfieldNbHoursRefroidissement.getText()));
+
 			m_instance.setNbPSP(Integer.valueOf(m_textfieldNbPSP.getText()));
+			for (int i = 0; i < m_instance.getNbPSP(); i++){
+				m_instance.getTP(i).setC_PA(Double.valueOf(m_textfieldCout_P_A.getText()));
+				m_instance.getTP(i).setC_AP(Double.valueOf(m_textfieldCout_A_P.getText()));
+				m_instance.getTP(i).setC_AT(Double.valueOf(m_textfieldCout_A_T.getText()));
+				m_instance.getTP(i).setC_TA(Double.valueOf(m_textfieldCout_T_A.getText()));
+				m_instance.getTP(i).setAlpha_P(Double.valueOf(m_textfieldAlpha_P.getText()));
+				m_instance.getTP(i).setAlpha_T(Double.valueOf(m_textfieldAlpha_T.getText()));
+				m_instance.getTP(i).setP_P_max(Double.valueOf(m_textfieldP_P_Max.getText()));
+				m_instance.getTP(i).setP_P_min(Double.valueOf(m_textfieldP_P_Min.getText()));
+				m_instance.getTP(i).setP_T_max(Double.valueOf(m_textfieldP_T_Max.getText()));
+				m_instance.getTP(i).setP_T_min(Double.valueOf(m_textfieldP_T_Min.getText()));
+			}
+			m_instance.setNbHoursRefroidissement(Integer.valueOf(m_textfieldNbHoursRefroidissement.getText()));
 		} catch (Exception exc) {
 			showMessageDialogError(exc, "Mauvaises saisies !!!");
 		}

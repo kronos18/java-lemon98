@@ -1,5 +1,10 @@
 package psp;
 
+import ilog.concert.IloException;
+import ilog.concert.IloIntVar;
+import ilog.concert.IloNumVar;
+import ilog.cplex.IloCplex;
+
 /**
  * Classe représentant une turbine pompe
  */
@@ -8,6 +13,113 @@ public class TurbinePompe {
 	private double p_P_min, p_P_max, p_T_min, p_T_max;
 	private double c_AP, c_PA, c_AT, c_TA;
 	private double alpha_P, alpha_T;
+
+    private IloNumVar[] arrayPtt;
+    private IloNumVar[] arrayPpt;
+    private IloIntVar[] arrayMpt;
+    private IloIntVar[] arrayMtt;
+    private IloIntVar[] arrayBatt;
+    private IloIntVar[] arrayBtat;
+    private IloIntVar[] arrayBapt;
+    private IloIntVar[] arrayBpat;
+	
+	public IloNumVar[] getArrayPtt() {
+		return arrayPtt;
+	}
+
+	public void setArrayPtt(IloNumVar[] arrayPtt) {
+		this.arrayPtt = arrayPtt;
+	}
+
+	public IloNumVar[] getArrayPpt() {
+		return arrayPpt;
+	}
+
+	public void setArrayPpt(IloNumVar[] arrayPpt) {
+		this.arrayPpt = arrayPpt;
+	}
+
+	public IloIntVar[] getArrayMpt() {
+		return arrayMpt;
+	}
+
+	public void setArrayMpt(IloIntVar[] arrayMpt) {
+		this.arrayMpt = arrayMpt;
+	}
+
+	public IloIntVar[] getArrayMtt() {
+		return arrayMtt;
+	}
+
+	public void setArrayMtt(IloIntVar[] arrayMtt) {
+		this.arrayMtt = arrayMtt;
+	}
+
+	public IloIntVar[] getArrayBatt() {
+		return arrayBatt;
+	}
+
+	public void setArrayBatt(IloIntVar[] arrayBatt) {
+		this.arrayBatt = arrayBatt;
+	}
+
+	public IloIntVar[] getArrayBtat() {
+		return arrayBtat;
+	}
+
+	public void setArrayBtat(IloIntVar[] arrayBtat) {
+		this.arrayBtat = arrayBtat;
+	}
+
+	public IloIntVar[] getArrayBapt() {
+		return arrayBapt;
+	}
+
+	public void setArrayBapt(IloIntVar[] arrayBapt) {
+		this.arrayBapt = arrayBapt;
+	}
+
+	public IloIntVar[] getArrayBpat() {
+		return arrayBpat;
+	}
+
+	public void setArrayBpat(IloIntVar[] arrayBpat) {
+		this.arrayBpat = arrayBpat;
+	}
+
+	public void initArrayOfVariableOfTheModel(IloCplex model, double[] cout) throws IloException{
+
+        this.arrayPtt = model.numVarArray(cout.length,
+                                          0.0,
+                                          Double.MAX_VALUE);
+        this.arrayPpt = model.numVarArray(cout.length,
+                                          -Double.MAX_VALUE,
+                                          0.0);
+        this.arrayMpt = model.intVarArray(cout.length,
+                                          0,
+                                          1);
+        this.arrayMtt = model.intVarArray(cout.length,
+                                          0,
+                                          1);
+        
+     // Question 4
+     		/*
+     		 * Cat, Cta, Cap, Cpa : cout pour le passage du mode arret (a) a turbine (t)
+     		 * Batt, Btat, Bapt, Bpat : est-ce qu'a l'instant t, il y a un changement de mode arret (a) vers le mode turbine (t).
+     		 * */
+             this.arrayBatt = model.intVarArray(cout.length,
+                                                0,
+                                                1);
+             this.arrayBtat = model.intVarArray(cout.length,
+                                                0,
+                                                1);
+             this.arrayBapt = model.intVarArray(cout.length,
+                                                0,
+                                                1);
+             this.arrayBpat = model.intVarArray(cout.length,
+                                                0,
+                                                1);
+	}
 	
 	public TurbinePompe(double p_P_min , double p_P_max, double p_T_min, double p_T_max,
 			double c_AP, double c_PA, double c_AT, double c_TA,

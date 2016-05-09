@@ -31,8 +31,8 @@ public class Instance {
 		this.delta_H = delta_H;
 	}
 
-	public TurbinePompe getTP() {
-		return tPs[0];
+	public TurbinePompe getTP(int i) {
+		return tPs[i];
 	}
 	
 	public TurbinePompe[] getTPs() {

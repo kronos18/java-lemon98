@@ -4,6 +4,10 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
+import com.sun.java.swing.plaf.windows.WindowsDesktopManager;
+
 public class SolverResult {
 
 	private Boolean m_bFailed;
@@ -27,15 +31,8 @@ public class SolverResult {
 		if (m_bFailed)
 			sRes += "Echec du calcul...";
 		else {
-			sRes += "Le calcul a réussi !";
-			if (m_sSolutionStatus == "Optimal")
-				sRes += " Une solution optimale a été trouvée.\n";
-			else
-				sRes += "Status de la solution : " + m_sSolutionStatus + ".\n";
+			sRes += getShortString();
 
-			sRes += "Gain obtenu pour le fonctionnement d'une pompe-turbine : " + m_dObjValue + " euros.\n";
-			sRes += "Gain obtenu pour le fonctionnement des " + m_iNbPSP + " pompes-turbines : " + m_dObjValue * m_iNbPSP + " euros.\n";
-			
 			sRes += "\nDétails du fonctionnement d'une pompe-turbine :\n";
 			
 			for(final TimeResult res : m_lAllResults)
@@ -44,6 +41,29 @@ public class SolverResult {
 
 		return sRes;
 
+	}
+	
+	public String getShortString()	{
+		String sRes = "";
+
+		if (!m_bFailed){
+			if (m_sSolutionStatus == "Optimal")
+				sRes += "Une solution optimale a été trouvée.\n";
+			else
+				sRes += "Status de la solution : " + m_sSolutionStatus + ".\n";
+
+			String sObjValue = new java.text.DecimalFormat("0.##").format(m_dObjValue);
+			sObjValue = sObjValue.replace(".", ",");
+			
+			sRes += "Gain obtenu pour le fonctionnement d'une pompe-turbine : " + sObjValue + " euros.\n";
+
+			String sObjValueParTurbine = new java.text.DecimalFormat("0.##").format(m_dObjValue / m_iNbPSP);
+			sObjValueParTurbine = sObjValueParTurbine.replace(".", ",");
+			
+			sRes += "Gain obtenu par pompes-turbines : " + sObjValueParTurbine + " euros.\n";
+		}
+
+		return sRes;
 	}
 
 	public ArrayList<TimeResult> getAllResults() {
